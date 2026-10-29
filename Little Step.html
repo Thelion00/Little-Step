@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Little Steps">
+<title>Little Steps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ EDIT HERE: colors ============ */
+:root{
+  --bg:#0b0b0e; --card:#15161c; --card2:#1c1e26; --line:#2a2d38;
+  --blue:#8fd3ff; --blue2:#5cb8f0; --blueSoft:rgba(143,211,255,.12);
+  --red:#ff4d5e; --redSoft:rgba(255,77,94,.14);
+  --mainRGB:143,211,255; --accRGB:255,77,94; --accLight:#ff7a87; --accDark:#c2263a;
+  --onMain:#06121b; --onAccent:#fff;
+  --text:#eef3f8; --muted:#8b93a3;
+  --r:18px;
+}
+/* themes: all shades of light blue, red and black */
+body.t-cherry{--blue:#ff5c6c;--blue2:#d9364a;--blueSoft:rgba(255,92,108,.14);--mainRGB:255,92,108;--onMain:#fff;
+  --red:#8fd3ff;--redSoft:rgba(143,211,255,.14);--accRGB:143,211,255;--accLight:#c4e8ff;--accDark:#4fa8de;--onAccent:#06121b}
+body.t-midnight{--bg:#070b14;--card:#0f1522;--card2:#151d2d;--line:#223049;
+  --blue:#a9dcff;--blue2:#6fbef0;--blueSoft:rgba(169,220,255,.12);--mainRGB:169,220,255;
+  --red:#e0435a;--redSoft:rgba(224,67,90,.14);--accRGB:224,67,90;--accLight:#f07186;--accDark:#a8273d}
+body.t-velvet{--bg:#0d0809;--card:#1a1012;--card2:#22161a;--line:#36242a;
+  --red:#ff3b4f;--redSoft:rgba(255,59,79,.15);--accRGB:255,59,79;--accLight:#ff6f7f;--accDark:#b81f33}
+.themes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.theme{padding:10px 4px;border-radius:14px;border:1px solid var(--line);background:var(--card2);font-size:12.5px;color:var(--muted)}
+.theme.on{border-color:var(--blue);color:var(--text)}
+.theme .sw{display:flex;justify-content:center;gap:3px;margin-bottom:6px}
+.theme .sw i{width:14px;height:14px;border-radius:50%;display:block;border:1px solid rgba(255,255,255,.15)}
+.reveal{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.85);opacity:0}100%{transform:scale(1);opacity:1}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;font-size:16px;line-height:1.45}
+body{min-height:100vh;padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+a{color:var(--blue)}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px calc(96px + env(safe-area-inset-bottom))}
+
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 14px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--blue2));display:grid;place-items:center;box-shadow:0 0 22px rgba(var(--mainRGB),.35)}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--red);display:block;box-shadow:0 0 10px var(--red)}
+.brand h1{font-size:20px;font-weight:600;letter-spacing:.2px}
+.brand small{display:block;color:var(--muted);font-size:12.5px;font-weight:400}
+.iconbtn{width:40px;height:40px;border-radius:12px;background:var(--card);display:grid;place-items:center;border:1px solid var(--line)}
+.iconbtn svg{width:20px;height:20px;stroke:var(--muted)}
+
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card h2{font-size:16px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue)}
+.card h2 .dot.r{background:var(--red)}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.hint{font-size:13.5px;color:var(--muted);margin-top:8px}
+.quote{background:linear-gradient(135deg,rgba(var(--mainRGB),.14),rgba(var(--accRGB),.08));border:1px solid rgba(var(--mainRGB),.25)}
+.quote p{font-size:17px;font-weight:500}
+.quote span{display:block;margin-top:8px;font-size:13px;color:var(--blue)}
+.hello{font-size:24px;font-weight:600;margin:2px 2px 12px}
+.hello em{font-style:normal;color:var(--blue)}
+
+/* counters */
+.counters{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.ctr{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 8px;text-align:center;position:relative}
+.ctr.over{border-color:rgba(var(--accRGB),.55)}
+.ctr.ok{border-color:rgba(var(--mainRGB),.45)}
+.ctr .lbl{font-size:13px;color:var(--muted)}
+.ctr .num{font-size:34px;font-weight:600;line-height:1.1;margin:4px 0}
+.ctr .goal{font-size:12px;color:var(--muted);min-height:16px}
+.ctr .row{display:flex;gap:6px;justify-content:center;margin-top:8px}
+.pm{width:40px;height:36px;border-radius:11px;background:var(--card2);border:1px solid var(--line);font-size:20px;font-weight:500}
+.pm.plus{background:var(--blueSoft);border-color:rgba(var(--mainRGB),.35);color:var(--blue)}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:7px 12px;border-radius:999px;background:var(--card2);border:1px solid var(--line);font-size:14px;color:var(--muted)}
+.chip.on{background:var(--blueSoft);border-color:var(--blue);color:var(--blue)}
+.moods{display:flex;justify-content:space-between;gap:6px}
+.mood{flex:1;font-size:26px;padding:8px 0;border-radius:14px;background:var(--card2);border:1px solid var(--line);filter:grayscale(.7);opacity:.7}
+.mood.on{filter:none;opacity:1;border-color:var(--blue);background:var(--blueSoft)}
+
+/* inputs */
+input[type=text],input[type=password],input[type=tel],input[type=url],input[type=number],textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;outline:none}
+input:focus,textarea:focus{border-color:var(--blue)}
+textarea{min-height:120px;resize:vertical}
+label.f{display:block;font-size:13.5px;color:var(--muted);margin:10px 0 6px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.grid3 label{font-size:12.5px;color:var(--muted);display:block;margin-bottom:4px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:14px;font-weight:600;background:var(--blue);color:var(--onMain);text-decoration:none;width:100%}
+.btn.red{background:var(--red);color:var(--onAccent)}
+.btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line);font-weight:500}
+.btn.small{padding:9px 12px;font-size:14px;width:auto}
+.btns{display:flex;gap:8px;margin-top:10px}
+.btns > *{flex:1}
+
+/* urge */
+.urgeBig{width:220px;height:220px;border-radius:50%;margin:20px auto 8px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,var(--accLight),var(--red) 60%,var(--accDark));color:var(--onAccent);font-size:22px;font-weight:600;text-align:center;box-shadow:0 0 0 10px var(--redSoft),0 0 60px rgba(var(--accRGB),.45);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 18px rgba(var(--accRGB),.07),0 0 80px rgba(var(--accRGB),.55)}}
+.center{text-align:center}
+.ringWrap{position:relative;width:230px;height:230px;margin:6px auto 10px}
+.ringWrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ringIn{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.timeTxt{font-size:40px;font-weight:600}
+.breath{width:90px;height:90px;border-radius:50%;margin:0 auto;background:radial-gradient(circle,var(--blue),var(--blue2));opacity:.85;transform:scale(.6);transition:transform 4s ease-in-out}
+.breathTxt{font-size:15px;color:var(--blue);margin-top:4px;min-height:22px}
+.steps li{list-style:none;display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
+.steps li:last-child{border:0}
+.steps b{color:var(--blue);min-width:22px}
+
+/* say no */
+.phrase{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);margin-bottom:8px;width:100%;text-align:left}
+.phrase small{color:var(--muted);font-size:12px;white-space:nowrap}
+.bigCount{font-size:44px;font-weight:700;color:var(--blue);line-height:1}
+
+/* journal */
+.entry{border-top:1px solid var(--line);padding:12px 0}
+.entry .meta{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between}
+.entry .p{font-size:13.5px;color:var(--blue);margin:4px 0}
+.entry .t{white-space:pre-wrap}
+.del{color:var(--muted);font-size:12.5px;text-decoration:underline}
+
+/* progress */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.stat .v{font-size:28px;font-weight:600;color:var(--blue)}
+.stat .v.r{color:var(--red)}
+.stat .k{font-size:13px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+details{border-top:1px solid var(--line);padding:10px 0}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:'+';color:var(--blue)}
+details[open] summary::after{content:'–'}
+details ul{margin:8px 0 2px 18px}
+details li{margin:4px 0;font-size:14.5px}
+.warn{background:var(--redSoft);border:1px solid rgba(var(--accRGB),.4);border-radius:12px;padding:10px 12px;font-size:14px;margin-top:8px}
+
+/* for you */
+.msg{padding:14px;border-radius:14px;background:var(--card2);border-left:3px solid var(--red);margin-bottom:8px;font-size:15.5px}
+.help{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.help:last-child{border:0}
+.help b{display:block;font-weight:500}
+.help span{font-size:13px;color:var(--muted)}
+.help a{white-space:nowrap;font-weight:600;text-decoration:none;color:var(--blue)}
+
+/* nav */
+nav{position:fixed;left:0;right:0;bottom:0;background:rgba(11,11,14,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:10}
+nav .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
+nav button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:11px;color:var(--muted)}
+nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--blue)}
+nav button.urgeTab{color:var(--red)}
+nav button.urgeTab.on{color:var(--red);font-weight:600}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.modal.show{display:flex}
+.sheet{background:var(--card);border:1px solid var(--line);border-radius:22px 22px 0 0;width:100%;max-width:560px;max-height:88vh;overflow:auto;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
+.sheet h3{font-size:18px;margin-bottom:6px}
+.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--card2);border:1px solid var(--blue);color:var(--text);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;transition:.25s;z-index:30;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hide{display:none!important}
+#lock{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;align-items:center;justify-content:center;padding:24px}
+#lock .box{width:100%;max-width:380px;text-align:center}
+#lock .logo{width:56px;height:56px;border-radius:18px;margin:0 auto 18px}
+#lock .logo i{width:16px;height:16px}
+#lock h3{font-size:22px;font-weight:600;margin-bottom:6px}
+#lock .err{color:var(--red);font-size:14px;min-height:20px;margin-top:8px}
+.pw{position:relative;margin-top:18px}
+.pw input{padding-right:64px;text-align:center;letter-spacing:.5px}
+.pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--blue);padding:6px}
+@media (max-width:360px){.ctr .num{font-size:28px}.pm{width:34px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo"><i></i></div>
+      <div><h1>Little Steps</h1><small id="today-date"></small></div>
+    </div>
+    <button class="iconbtn" id="open-settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </header>
+
+  <!-- ================= TODAY ================= -->
+  <section id="v-today">
+    <div class="hello" id="hello"></div>
+    <div class="card quote"><p id="daily-quote"></p><span id="daily-quote-from"></span></div>
+
+    <div class="counters" id="counters"></div>
+    <div class="card hide" id="drink-tip">
+      <h2><span class="dot"></span>While drinking</h2>
+      <div class="small">Eat something first, sip slowly, and have a glass of water between every drink. Switching to a lighter drink also helps.</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="dot"></span>How do you feel?</h2>
+      <div class="moods" id="moods"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="dot r"></span>What pushed the urge today?</h2>
+      <div class="chips" id="triggers"></div>
+      <div class="hint">Knowing your triggers is the first step to planning around them.</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="dot"></span>Song of the day 🎧</h2>
+      <input type="text" id="song" placeholder="What are you listening to today?">
+      <a class="btn ghost small" id="play-today" style="margin-top:10px;width:100%" target="_blank" rel="noopener">Open my playlist</a>
+    </div>
+  </section>
+
+  <!-- ================= URGE ================= -->
+  <section id="v-urge" class="hide">
+    <div id="urge-start">
+      <div class="center">
+        <button class="urgeBig" id="urge-btn">I have<br>an urge</button>
+        <p class="muted small" style="margin:8px 20px 16px">An urge usually lasts only 3–5 minutes. Let's ride it out together.</p>
+      </div>
+      <div class="card">
+        <h2><span class="dot r"></span>What is it for?</h2>
+        <div class="chips" id="urge-what"></div>
+      </div>
+      <div class="card">
+        <h2><span class="dot"></span>The 4 Ds</h2>
+        <ul class="steps">
+          <li><b>1</b><div><strong>Delay</strong> — wait 5 minutes. The urge gets weaker on its own.</div></li>
+          <li><b>2</b><div><strong>Deep breaths</strong> — slow in, slow out, a few times.</div></li>
+          <li><b>3</b><div><strong>Drink water</strong> — sip it slowly, keep your mouth busy.</div></li>
+          <li><b>4</b><div><strong>Distract</strong> — music, a walk, a message to a friend.</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="urge-run" class="hide">
+      <div class="ringWrap">
+        <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="#2a2d38" stroke-width="7"/><circle id="ring" cx="60" cy="60" r="54" fill="none" style="stroke:var(--blue)" stroke-width="7" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="0"/></svg>
+        <div class="ringIn"><div><div class="timeTxt" id="urge-time">5:00</div><div class="muted small">you've got this</div></div></div>
+      </div>
+      <div class="breath" id="breath"></div>
+      <div class="breathTxt center" id="breath-txt">Breathe in…</div>
+      <div class="card" style="margin-top:14px">
+        <h2><span class="dot"></span>Right now</h2>
+        <div class="small" id="urge-tip"></div>
+        <div class="btns">
+          <a class="btn" id="urge-music" target="_blank" rel="noopener">🎵 Play my music</a>
+        </div>
+        <div class="btns" id="call-row">
+          <a class="btn red" id="urge-call">📞 Call</a>
+        </div>
+        <div class="hint center" id="call-number"></div>
+      </div>
+      <button class="btn ghost" id="urge-done">I'm okay now</button>
+    </div>
+
+    <div id="urge-end" class="hide">
+      <div class="card center" style="padding:24px 16px">
+        <div style="font-size:42px">🌊</div>
+        <h2 style="justify-content:center;margin-top:8px">Did the urge pass?</h2>
+        <div class="btns"><button class="btn" id="urge-yes">Yes, it passed</button><button class="btn ghost" id="urge-no">Not this time</button></div>
+      </div>
+      <div class="card center hide" id="urge-result"></div>
+    </div>
+  </section>
+
+  <!-- ================= SAY NO ================= -->
+  <section id="v-no" class="hide">
+    <div class="card quote"><p>Saying no isn't being mean. It's being honest with yourself and with them.</p></div>
+    <div class="card center">
+      <div class="muted small">No's said this week</div>
+      <div class="bigCount" id="no-week">0</div>
+      <input type="text" id="no-note" placeholder="Optional: what did you say no to?" style="margin-top:12px">
+      <button class="btn" id="no-add" style="margin-top:10px">I said no today ✓</button>
+    </div>
+    <div class="card">
+      <h2><span class="dot r"></span>This week's challenge</h2>
+      <p id="challenge"></p>
+    </div>
+    <div class="card">
+      <h2><span class="dot"></span>Ready phrases <span class="muted small" style="font-weight:400">· tap to copy</span></h2>
+      <div id="phrases"></div>
+    </div>
+    <div class="card">
+      <h2><span class="dot"></span>Tricks that help</h2>
+      <ul class="steps">
+        <li><b>⏸</b><div><strong>Pause.</strong> You don't have to answer right away. "Let me think about it" is a full answer.</div></li>
+        <li><b>🔁</b><div><strong>Broken record.</strong> If they insist, repeat the same calm sentence. No new reasons needed.</div></li>
+        <li><b>✂️</b><div><strong>Keep it short.</strong> Long explanations invite negotiation.</div></li>
+        <li><b>↔️</b><div><strong>Offer something else</strong> — only if you actually want to.</div></li>
+        <li><b>💙</b><div><strong>Notice the feeling after.</strong> Guilt fades. Self‑respect stays.</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= JOURNAL ================= -->
+  <section id="v-journal" class="hide">
+    <div class="card">
+      <h2><span class="dot"></span>Today's question</h2>
+      <p id="prompt" style="font-size:17px;font-weight:500;margin-bottom:10px"></p>
+      <textarea id="j-text" placeholder="Write anything. Nobody else sees this."></textarea>
+      <div class="btns"><button class="btn ghost" id="j-other">Another question</button><button class="btn" id="j-save">Save</button></div>
+    </div>
+    <div class="card">
+      <h2><span class="dot r"></span>Past entries</h2>
+      <div id="j-list"></div>
+    </div>
+  </section>
+
+  <!-- ================= PROGRESS ================= -->
+  <section id="v-progress" class="hide">
+    <div class="stats" id="stats"></div>
+    <div class="card">
+      <h2><span class="dot"></span>Last 14 days</h2>
+      <div id="charts"></div>
+      <div class="hint">Blue bars = what you had. Red dashed line = your goal.</div>
+    </div>
+    <div class="card">
+      <h2><span class="dot r"></span>My plan</h2>
+      <p class="small muted">Go slow: take your usual amount, lower it by about 1 for 1–2 weeks, then step again. Small steps stick.</p>
+      <div class="grid3" style="margin-top:12px">
+        <div><label>Usual 🚬/day</label><input type="number" min="0" id="b-cig"></div>
+        <div><label>Usual 💨/day</label><input type="number" min="0" id="b-vape"></div>
+        <div><label>Usual 🍷/day</label><input type="number" min="0" id="b-drink"></div>
+      </div>
+      <div class="grid3" style="margin-top:10px">
+        <div><label>Goal 🚬/day</label><input type="number" min="0" id="g-cig"></div>
+        <div><label>Goal 💨/day</label><input type="number" min="0" id="g-vape"></div>
+        <div><label>Goal 🍷/day</label><input type="number" min="0" id="g-drink"></div>
+      </div>
+      <label class="f">Alcohol‑free days per week (goal)</label>
+      <input type="number" min="0" max="7" id="g-af">
+      <div class="btns"><button class="btn ghost" id="suggest">Suggest next step</button><button class="btn" id="save-plan">Save plan</button></div>
+      <div class="warn">⚠️ If you drink every day and feel shaky, sweaty or anxious when you don't drink, do <b>not</b> stop suddenly. That can be dangerous. Talk to a doctor or Ingrado first so they can help you cut down safely.</div>
+    </div>
+    <div class="card">
+      <h2><span class="dot"></span>What actually works</h2>
+      <details><summary>🍷 Drinking less</summary><ul>
+        <li>Keep a drink diary (this app does it) to see how much, when and where.</li>
+        <li>Pick at least 2–3 alcohol‑free days each week.</li>
+        <li>Never drink on an empty stomach. Eat first.</li>
+        <li>Have water or a soft drink between every alcoholic drink.</li>
+        <li>Switch to lighter drinks and sip slower.</li>
+        <li>Keep little or no alcohol at home.</li>
+        <li>Try not to drink when you're upset. Talk to someone, walk, or put music on instead.</li>
+        <li>Plan things to do that don't involve drinking.</li>
+      </ul></details>
+      <details><summary>🚬 Smoking less</summary><ul>
+        <li>Cravings come in waves and last only a few minutes. Use the Urge button.</li>
+        <li>Know your triggers (coffee, stress, drinking, friends) and plan for them.</li>
+        <li>Remove lighters and ashtrays from where you hang out.</li>
+        <li>Alcohol makes smoking urges stronger, so cutting both helps both.</li>
+        <li>Nicotine gum or patches can help with cravings. Ask a pharmacist.</li>
+        <li>The free Stop‑tabacco line triples the chance of success.</li>
+      </ul></details>
+      <details><summary>💨 Vaping less</summary><ul>
+        <li>Stretch the time between sessions: every 20 min → every 40 min → every hour.</li>
+        <li>Pick vape‑free places (bedroom, inside, car) and slowly add more.</li>
+        <li>Don't keep the vape in your hand all the time.</li>
+        <li>Lower the nicotine strength step by step over weeks (e.g. 20 → 12 → 6 → 3 → 0 mg).</li>
+        <li>Vaping a bit more right after lowering strength is normal.</li>
+        <li>Choose a flavour you don't love. It makes it less fun.</li>
+      </ul></details>
+      <details><summary>💙 If you slip</summary><ul>
+        <li>A slip is not a failure. Most people need a few tries.</li>
+        <li>Log it honestly, look at the trigger, try again tomorrow.</li>
+        <li>Remember why you started. Read the "For you" tab.</li>
+      </ul></details>
+    </div>
+  </section>
+
+  <!-- ================= FOR YOU ================= -->
+  <section id="v-you" class="hide">
+    <div class="card center" style="padding:24px 16px">
+      <div style="font-size:40px">💌</div>
+      <h2 style="justify-content:center;margin-top:6px" id="msg-title">A message for you</h2>
+      <p class="muted small" id="msg-left" style="margin-bottom:14px"></p>
+      <div class="msg hide" id="msg-one" style="text-align:left"></div>
+      <button class="btn red" id="msg-open">Open a surprise</button>
+      <button class="btn ghost hide" id="msg-reset">🔄 Start the surprises again</button>
+    </div>
+    <div class="card hide" id="opened-card">
+      <h2><span class="dot"></span>Messages you've opened</h2>
+      <div id="msg-opened"></div>
+    </div>
+  </section>
+</div>
+
+<nav><div class="in" id="nav"></div></nav>
+
+<!-- settings -->
+<div class="modal" id="settings">
+  <div class="sheet">
+    <h3>Settings</h3>
+    <p class="muted small">Everything you write stays only in this browser, on this device. Nobody else can see it.</p>
+    <label class="f">Your name</label>
+    <input type="text" id="s-name">
+    <label class="f">Playlist link (Spotify, YouTube, Apple Music…)</label>
+    <input type="url" id="s-playlist" placeholder="https://open.spotify.com/playlist/...">
+    <label class="f">Your support person's name</label>
+    <input type="text" id="s-friend">
+    <label class="f">Their phone number</label>
+    <input type="tel" id="s-phone" placeholder="+41 ...">
+    <label class="f">Colours</label>
+    <div class="themes" id="themes"></div>
+    <button class="btn" id="s-save" style="margin-top:14px">Save</button>
+
+    <h3 style="margin-top:22px">Backup</h3>
+    <p class="muted small">Copy your backup and keep it somewhere safe (e.g. a note). To restore, paste it below.</p>
+    <div class="btns"><button class="btn ghost" id="b-copy">Copy backup</button><button class="btn ghost" id="b-restore">Restore</button></div>
+    <textarea id="b-box" style="min-height:80px;margin-top:8px;font-size:12px" placeholder="Paste a backup here to restore"></textarea>
+
+    <h3 style="margin-top:22px">Reset</h3>
+    <button class="btn ghost" id="r-ask" style="color:var(--red)">Delete all my data</button>
+    <div class="btns hide" id="r-confirm"><button class="btn red" id="r-yes">Yes, delete everything</button><button class="btn ghost" id="r-no">Cancel</button></div>
+    <button class="btn ghost" id="s-close" style="margin-top:18px">Close</button>
+  </div>
+</div>
+
+<!-- first run -->
+<div class="modal" id="welcome">
+  <div class="sheet">
+    <div style="font-size:34px">🌱</div>
+    <h3>Hey, welcome.</h3>
+    <p class="muted small" style="margin-bottom:6px">This app is yours. No judging, no rush. Just small steps. Everything stays on this device.</p>
+    <label class="f">What should I call you?</label>
+    <input type="text" id="w-name">
+    <p class="small" style="margin-top:14px">About how much on a normal day? (Be honest, it's only for you.)</p>
+    <div class="grid3" style="margin-top:8px">
+      <div><label>🚬 cigarettes</label><input type="number" min="0" id="w-cig" value="0"></div>
+      <div><label>💨 vape sessions</label><input type="number" min="0" id="w-vape" value="0"></div>
+      <div><label>🍷 drinks</label><input type="number" min="0" id="w-drink" value="0"></div>
+    </div>
+    <label class="f">Your favourite playlist link (optional)</label>
+    <input type="url" id="w-playlist" placeholder="https://open.spotify.com/playlist/...">
+    <button class="btn" id="w-go" style="margin-top:16px">Let's start</button>
+    <p class="hint center">You can change all of this later in ⚙️</p>
+  </div>
+</div>
+
+<div id="lock" class="hide">
+  <div class="box">
+    <div class="logo"><i></i></div>
+    <h3>This app is just for you 💙</h3>
+    <p class="muted small">Enter your secret code to open it. You only need to do this once on this device.</p>
+    <div class="pw"><input type="password" id="lock-code" placeholder="Secret code" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button id="lock-show" type="button">show</button></div>
+    <button class="btn" id="lock-go" style="margin-top:12px">Unlock</button>
+    <div class="err" id="lock-err"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* Personal content is encrypted. Ask Claude to update messages. */
+let FRIEND_NAME_DEFAULT = "";
+let FRIEND_PHONE_DEFAULT = "";
+const VAULT = {salt:"otA1Solmh2AQ92f3k2/3SA==", iv:"K+Woq93SPlQ9FX5Z", data:"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", iter:600000};          // e.g. "+41 79 123 45 67"
+// Surprise messages (opened one at a time in "For you"). Add more lines in the same format.
+let MESSAGES = [];  // filled after unlock (encrypted below)
+// Generic lines for Today, used only until she has opened her first surprise
+const DAILY = [
+  "Small steps still move you forward.",
+  "One urge at a time. One day at a time.",
+  "You don't have to be perfect to be proud of today.",
+  "Be as kind to yourself as you are to others.",
+  "Today counts, even if it's messy.",
+  "You're allowed to start again, as many times as you need."
+];
+const THEMES = [
+  {k:"ice",l:"Ice",c:["#0b0b0e","#8fd3ff","#ff4d5e"]},
+  {k:"cherry",l:"Cherry",c:["#0b0b0e","#ff5c6c","#8fd3ff"]},
+  {k:"midnight",l:"Midnight",c:["#070b14","#a9dcff","#e0435a"]},
+  {k:"velvet",l:"Velvet",c:["#0d0809","#8fd3ff","#ff3b4f"]}
+];
+
+/* ============ storage ============ */
+const KEY = "littleSteps.v1";
+const blank = () => ({
+  v:1, setup:false,
+  profile:{name:"", playlist:"", friend:"", phone:"", theme:"ice"},
+  baseline:{cig:0,vape:0,drink:0},
+  goals:{cig:null,vape:null,drink:null,af:2},
+  days:{}, urges:[], journal:[], nos:[], opened:[], round:0, tab:"today"
+});
+let S;
+function load(){
+  try{ const raw = localStorage.getItem(KEY); S = raw ? Object.assign(blank(), JSON.parse(raw)) : blank(); S.profile=Object.assign(blank().profile,S.profile); }
+  catch(e){ S = blank(); }
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ============ helpers ============ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const todayKey = () => keyOf(new Date());
+function day(k=todayKey()){
+  if(!S.days[k]) S.days[k] = {cig:0,vape:0,drink:0,mood:null,song:"",triggers:[]};
+  return S.days[k];
+}
+function weekStart(d=new Date()){ const x=new Date(d); const w=(x.getDay()+6)%7; x.setHours(0,0,0,0); x.setDate(x.getDate()-w); return x; }
+function inThisWeek(t){ return t >= weekStart().getTime(); }
+function dayIndex(){ const s=new Date(2026,0,1); return Math.floor((Date.now()-s)/864e5); }
+function weekIndex(){ return Math.floor(dayIndex()/7); }
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast.h); toast.h=setTimeout(()=>t.classList.remove("show"),2200); }
+function setLink(a, url){ if(url){ a.href=url; a.classList.remove("hide"); } else { a.removeAttribute("href"); } }
+
+const ITEMS = [
+  {k:"cig",  icon:"🚬", name:"Cigarettes"},
+  {k:"vape", icon:"💨", name:"Vape"},
+  {k:"drink",icon:"🍷", name:"Drinks"}
+];
+const TRIGGERS = ["Stress","Boredom","Lonely","Sad","Anxious","Friends / party","After eating","Coffee","Habit","Argument"];
+const MOODS = ["😞","😕","😐","🙂","😄"];
+const PHRASES = [
+  "Not tonight, thanks.",
+  "Let me think about it and I'll get back to you.",
+  "I'm good, thanks. I'm cutting down.",
+  "I can't this time, but thanks for asking.",
+  "I'm not drinking tonight. I'll grab a soda.",
+  "That doesn't work for me.",
+  "I need some time for myself today.",
+  "No. (That's it. That's the whole sentence.)"
+];
+const CHALLENGES = [
+  "Say \"let me think about it\" once instead of an instant yes.",
+  "Turn down one drink or cigarette someone offers you.",
+  "Say no to one small favour you don't really want to do.",
+  "Leave a place or chat when it stops feeling good for you.",
+  "Tell someone what you actually prefer (food, plan, time).",
+  "Don't reply to a message straight away if you don't want to.",
+  "Say no without apologising more than once.",
+  "Ask for something you need, instead of waiting for it."
+];
+const PROMPTS = [
+  "What did I feel today, and when did it start?",
+  "Did I notice an old pattern in how I act with people (needy, jealous, giving too much)?",
+  "What is one thing I can forgive myself for today?",
+  "What did I give myself today that I usually look for in others?",
+  "What would future me thank me for doing tomorrow?",
+  "One small thing that went well today:",
+  "Did I say yes when I wanted to say no? What would I say next time?",
+  "What triggered an urge today, and what helped, even a little?",
+  "Who made me feel safe lately, and why?",
+  "If my best friend lived my day, what would I tell them?"
+];
+const URGE_WHAT = [{k:"cig",l:"🚬 Smoke"},{k:"vape",l:"💨 Vape"},{k:"drink",l:"🍷 Drink"},{k:"other",l:"✨ Something else"}];
+const URGE_TIPS = [
+  "Get a glass of cold water and sip it slowly.",
+  "Stand up and move to another room. Change the scene.",
+  "Put on one song and just listen to the whole thing.",
+  "Text someone. It doesn't have to be about the urge.",
+  "Splash your face with cold water.",
+  "Go outside for a 5‑minute walk, without the vape or cigarettes.",
+  "Chew gum or eat something crunchy."
+];
+
+/* ============ nav ============ */
+const TABS = [
+  {k:"today",l:"Today",svg:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'},
+  {k:"urge",l:"Urge",svg:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',cls:"urgeTab"},
+  {k:"no",l:"Say no",svg:'<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>'},
+  {k:"journal",l:"Journal",svg:'<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h6M9 13h6"/>'},
+  {k:"progress",l:"Progress",svg:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'},
+  {k:"you",l:"For you",svg:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>'}
+];
+function renderNav(){
+  $("nav").innerHTML = TABS.map(t=>`<button data-tab="${t.k}" class="${t.cls||""} ${S.tab===t.k?"on":""}"><svg viewBox="0 0 24 24">${t.svg}</svg>${t.l}</button>`).join("");
+  $("nav").querySelectorAll("button").forEach(b=>b.onclick=()=>go(b.dataset.tab));
+}
+function go(tab){
+  S.tab=tab; save();
+  TABS.forEach(t=>$("v-"+t.k).classList.toggle("hide", t.k!==tab));
+  renderNav(); render(); window.scrollTo(0,0);
+}
+
+/* ============ TODAY ============ */
+function renderToday(){
+  const d = day();
+  const n = S.profile.name;
+  const h = new Date().getHours();
+  const hi = h<12?"Good morning":h<18?"Hey":"Good evening";
+  $("hello").innerHTML = `${hi}${n?`, <em>${esc(n)}</em>`:""} 💙`;
+  { const opened=[...new Set(S.opened.map(o=>o.text))].filter(t=>MESSAGES.includes(t));
+    const pool=opened.length?opened:DAILY;
+    if(!d.quote || !pool.includes(d.quote)){ const yd=new Date(); yd.setDate(yd.getDate()-1); const prev=S.days[keyOf(yd)]?.quote;
+      const opts=pool.length>1?pool.filter(t=>t!==prev):pool; d.quote=opts[Math.floor(Math.random()*opts.length)]; save(); }
+    $("daily-quote").textContent = d.quote;
+    $("daily-quote-from").textContent = opened.length ? "— " + (S.profile.friend || FRIEND_NAME_DEFAULT) : "💌 Open a surprise in \"For you\""; }
+
+  $("counters").innerHTML = ITEMS.map(it=>{
+    const g = S.goals[it.k];
+    const has = g!==null && g!=="" && !isNaN(g);
+    const st = has ? (d[it.k] > g ? "over" : (d[it.k]>0||g===0?"ok":"")) : "";
+    return `<div class="ctr ${st}">
+      <div class="lbl">${it.icon} ${it.name}</div>
+      <div class="num">${d[it.k]}</div>
+      <div class="goal">${has?`goal ≤ ${g}`:"&nbsp;"}</div>
+      <div class="row"><button class="pm" data-k="${it.k}" data-d="-1" aria-label="minus">−</button><button class="pm plus" data-k="${it.k}" data-d="1" aria-label="plus">+</button></div>
+    </div>`;
+  }).join("");
+  $("counters").querySelectorAll(".pm").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k; const v=Math.max(0, d[k]+Number(b.dataset.d)); d[k]=v; save(); renderToday();
+    const g=S.goals[k];
+    if(b.dataset.d==="1" && g!==null && v===g+1) toast("Over your goal today. That's okay, just notice it 💙");
+  });
+  $("drink-tip").classList.toggle("hide", d.drink===0);
+
+  $("moods").innerHTML = MOODS.map((m,i)=>`<button class="mood ${d.mood===i?"on":""}" data-i="${i}">${m}</button>`).join("");
+  $("moods").querySelectorAll(".mood").forEach(b=>b.onclick=()=>{ d.mood=Number(b.dataset.i); save(); renderToday(); });
+
+  $("triggers").innerHTML = TRIGGERS.map(t=>`<button class="chip ${d.triggers.includes(t)?"on":""}">${t}</button>`).join("");
+  $("triggers").querySelectorAll(".chip").forEach((b,i)=>b.onclick=()=>{
+    const t=TRIGGERS[i]; d.triggers = d.triggers.includes(t) ? d.triggers.filter(x=>x!==t) : [...d.triggers,t]; save(); renderToday();
+  });
+
+  $("song").value = d.song || "";
+  $("song").oninput = e=>{ d.song=e.target.value; save(); };
+  const pl=$("play-today");
+  if(S.profile.playlist){ pl.href=S.profile.playlist; pl.textContent="🎵 Open my playlist"; pl.onclick=null; }
+  else { pl.removeAttribute("href"); pl.textContent="Add your playlist link in ⚙️"; pl.onclick=()=>openSettings(); }
+}
+
+/* ============ URGE ============ */
+let urgeWhat="cig", urgeTimer=null, breathTimer=null, urgeStart=0;
+const URGE_SECS=300;
+function renderUrge(){
+  $("urge-what").innerHTML = URGE_WHAT.map(u=>`<button class="chip ${urgeWhat===u.k?"on":""}" data-k="${u.k}">${u.l}</button>`).join("");
+  $("urge-what").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ urgeWhat=b.dataset.k; renderUrge(); });
+}
+function showUrge(part){ ["urge-start","urge-run","urge-end"].forEach(p=>$(p).classList.toggle("hide", p!==part)); }
+function startUrge(){
+  urgeStart=Date.now(); showUrge("urge-run");
+  $("urge-tip").textContent = URGE_TIPS[Math.floor(Math.random()*URGE_TIPS.length)];
+  const m=$("urge-music");
+  if(S.profile.playlist){ m.href=S.profile.playlist; m.textContent="🎵 Play my music"; m.onclick=null; }
+  else { m.removeAttribute("href"); m.textContent="🎵 Add a playlist in ⚙️"; m.onclick=()=>openSettings(); }
+  const f=S.profile.friend||FRIEND_NAME_DEFAULT, p=S.profile.phone||FRIEND_PHONE_DEFAULT;
+  $("call-row").classList.toggle("hide", !p);
+  if(p){ $("urge-call").href="tel:"+p.replace(/\s/g,""); $("urge-call").textContent="📞 Call "+f; $("call-number").textContent=f+": "+p; }
+  else $("call-number").textContent = "Text or call " + f + " if you need to.";
+  tick(); urgeTimer=setInterval(tick,250);
+  breathe(); breathTimer=setInterval(breathe,14000);
+}
+function tick(){
+  const left=Math.max(0, URGE_SECS-(Date.now()-urgeStart)/1000);
+  $("urge-time").textContent = `${Math.floor(left/60)}:${pad(Math.floor(left%60))}`;
+  $("ring").setAttribute("stroke-dashoffset", (339.3*(1-left/URGE_SECS)).toFixed(1));
+  if(left<=0) endUrge();
+}
+function breathe(){
+  const b=$("breath"), t=$("breath-txt");
+  b.style.transitionDuration="4s"; b.style.transform="scale(1)"; t.textContent="Breathe in…";
+  setTimeout(()=>{ t.textContent="Hold…"; },4000);
+  setTimeout(()=>{ b.style.transitionDuration="6s"; b.style.transform="scale(.6)"; t.textContent="Breathe out slowly…"; },8000);
+}
+function stopTimers(){ clearInterval(urgeTimer); clearInterval(breathTimer); urgeTimer=breathTimer=null; }
+function endUrge(){ stopTimers(); showUrge("urge-end"); $("urge-result").classList.add("hide"); }
+function logUrge(passed){
+  const mins=Math.max(1,Math.round((Date.now()-urgeStart)/60000));
+  S.urges.push({t:Date.now(), what:urgeWhat, passed, mins}); save();
+  const r=$("urge-result"); r.classList.remove("hide");
+  const won = S.urges.filter(u=>u.passed).length;
+  r.innerHTML = passed
+    ? `<div style="font-size:34px">💙</div><h2 style="justify-content:center">You did it.</h2><p class="small muted">That's <b style="color:var(--blue)">${won}</b> urge${won===1?"":"s"} beaten so far. Every one makes the next one easier.</p><button class="btn ghost" style="margin-top:12px" id="urge-back">Back</button>`
+    : `<div style="font-size:34px">🌱</div><h2 style="justify-content:center">That's okay.</h2><p class="small muted">You still waited ${mins} minute${mins===1?"":"s"} before deciding. That counts. Log it on Today and try again next time, no guilt.</p><button class="btn ghost" style="margin-top:12px" id="urge-back">Back</button>`;
+  $("urge-back").onclick=()=>showUrge("urge-start");
+}
+
+/* ============ SAY NO ============ */
+function renderNo(){
+  $("no-week").textContent = S.nos.filter(n=>inThisWeek(n.t)).length;
+  $("challenge").textContent = CHALLENGES[weekIndex() % CHALLENGES.length];
+  $("phrases").innerHTML = PHRASES.map((p,i)=>`<button class="phrase" data-i="${i}"><span>${esc(p)}</span><small>copy</small></button>`).join("");
+  $("phrases").querySelectorAll(".phrase").forEach(b=>b.onclick=async()=>{
+    try{ await navigator.clipboard.writeText(PHRASES[b.dataset.i]); toast("Copied"); }catch(e){ toast("Long-press to copy"); }
+  });
+}
+
+/* ============ JOURNAL ============ */
+let promptI = dayIndex() % PROMPTS.length;
+function renderJournal(){
+  $("prompt").textContent = PROMPTS[promptI];
+  const list = [...S.journal].reverse();
+  $("j-list").innerHTML = list.length ? list.map(e=>{
+    const d=new Date(e.t);
+    return `<div class="entry"><div class="meta"><span>${d.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"})} · ${pad(d.getHours())}:${pad(d.getMinutes())}</span><button class="del" data-t="${e.t}">delete</button></div><div class="p">${esc(e.prompt)}</div><div class="t">${esc(e.text)}</div></div>`;
+  }).join("") : `<p class="muted small">Nothing yet. Your first entry will show up here.</p>`;
+  $("j-list").querySelectorAll(".del").forEach(b=>{
+    b.onclick=()=>{
+      if(b.dataset.armed){ S.journal=S.journal.filter(e=>String(e.t)!==b.dataset.t); save(); renderJournal(); }
+      else { b.dataset.armed="1"; b.textContent="tap again to delete"; b.style.color="var(--red)"; }
+    };
+  });
+}
+
+/* ============ PROGRESS ============ */
+function last(n){ const out=[]; for(let i=n-1;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); out.push(d); } return out; }
+function renderProgress(){
+  const ws=weekStart(); const daysThisWeek=[];
+  for(let i=0;i<7;i++){ const d=new Date(ws); d.setDate(d.getDate()+i); if(d<=new Date()) daysThisWeek.push(keyOf(d)); }
+  const af = daysThisWeek.filter(k=>S.days[k] && S.days[k].drink===0).length;
+  const beaten = S.urges.filter(u=>u.passed && inThisWeek(u.t)).length;
+  const nos = S.nos.filter(n=>inThisWeek(n.t)).length;
+  const jw = S.journal.filter(j=>inThisWeek(j.t)).length;
+  $("stats").innerHTML = [
+    [`${af}/${S.goals.af??2}`,"alcohol‑free days this week",""],
+    [beaten,"urges beaten this week","r"],
+    [nos,"no's said this week",""],
+    [jw,"journal entries this week","r"]
+  ].map(s=>`<div class="stat"><div class="v ${s[2]}">${s[0]}</div><div class="k">${s[1]}</div></div>`).join("");
+
+  const ds = last(14);
+  $("charts").innerHTML = ITEMS.map(it=>{
+    const vals = ds.map(d=>S.days[keyOf(d)]?.[it.k] ?? 0);
+    const g = S.goals[it.k];
+    const max = Math.max(1, ...vals, g||0, S.baseline[it.k]||0);
+    const W=320,H=90,bw=W/14;
+    const bars = vals.map((v,i)=>{ const h=v/max*(H-14); return `<rect x="${i*bw+3}" y="${H-h}" width="${bw-6}" height="${Math.max(h,1.5)}" rx="3" style="fill:${v===0?"var(--line)":"var(--blue)"}"/>`; }).join("");
+    const gl = (g!==null && g!=="") ? `<line x1="0" x2="${W}" y1="${H-g/max*(H-14)}" y2="${H-g/max*(H-14)}" style="stroke:var(--red)" stroke-width="1.5" stroke-dasharray="5 4"/>` : "";
+    const avg = (vals.reduce((a,b)=>a+b,0)/14).toFixed(1);
+    return `<div style="margin:6px 0 14px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${it.icon} ${it.name}</span><span class="muted">avg ${avg}/day</span></div><svg class="chart" viewBox="0 0 ${W} ${H}">${bars}${gl}</svg></div>`;
+  }).join("");
+
+  ["cig","vape","drink"].forEach(k=>{ $("b-"+k).value=S.baseline[k]??0; $("g-"+k).value = S.goals[k]??""; });
+  $("g-af").value = S.goals.af ?? 2;
+}
+function suggestStep(){
+  ["cig","vape","drink"].forEach(k=>{
+    const base = Number($("b-"+k).value)||0;
+    const cur = $("g-"+k).value==="" ? base : Number($("g-"+k).value);
+    $("g-"+k).value = Math.max(0, cur - (cur>10?2:1));
+  });
+  if(Number($("g-af").value)<2) $("g-af").value=2;
+  toast("Suggested: about 1 less than now. Adjust if it feels too much.");
+}
+function savePlan(){
+  ["cig","vape","drink"].forEach(k=>{
+    S.baseline[k]=Math.max(0,Number($("b-"+k).value)||0);
+    const g=$("g-"+k).value; S.goals[k]= g==="" ? null : Math.max(0,Number(g));
+  });
+  S.goals.af=Math.min(7,Math.max(0,Number($("g-af").value)||0));
+  save(); renderProgress(); toast("Plan saved 💙");
+}
+
+/* ============ FOR YOU ============ */
+function unopened(){ const r=S.round||0; return MESSAGES.filter(m=>!S.opened.some(o=>o.text===m && (o.round||0)===r)); }
+function renderYou(){
+  const f=S.profile.friend||FRIEND_NAME_DEFAULT;
+  $("msg-title").textContent = "A message from " + f;
+  const left=unopened().length;
+  $("msg-left").textContent = !MESSAGES.length ? "No messages yet. Something is coming soon 💙"
+    : left ? `${left} surprise${left===1?"":"s"} waiting for you. Open one when the day feels heavy.`
+    : "You've opened them all 💙 New ones might come soon.";
+  $("msg-open").classList.toggle("hide", !left);
+  $("msg-reset").classList.toggle("hide", !MESSAGES.length || left>0);
+  const seen=new Set(), list=[];
+  const r=S.round||0; [...S.opened].reverse().forEach(o=>{ if((o.round||0)===r && !seen.has(o.text)){ seen.add(o.text); list.push(o); } });
+  $("opened-card").classList.toggle("hide", !list.length);
+  $("msg-opened").innerHTML = list.map(o=>`<div class="msg">${esc(o.text)}</div>`).join("");
+}
+function openMsg(){
+  const pool=unopened(); if(!pool.length){ renderYou(); return; }
+  const m=pool[Math.floor(Math.random()*pool.length)];
+  S.opened.push({text:m,t:Date.now(),round:S.round||0}); save();
+  renderYou();
+  const el=$("msg-one"); el.textContent=m; el.classList.remove("hide","reveal"); void el.offsetWidth; el.classList.add("reveal");
+}
+
+/* ============ settings ============ */
+function applyTheme(){ document.body.className = S.profile.theme && S.profile.theme!=="ice" ? "t-"+S.profile.theme : ""; }
+let pickTheme;
+function renderThemes(){
+  $("themes").innerHTML = THEMES.map(t=>`<button class="theme ${pickTheme===t.k?"on":""}" data-k="${t.k}"><div class="sw">${t.c.map(c=>`<i style="background:${c}"></i>`).join("")}</div>${t.l}</button>`).join("");
+  $("themes").querySelectorAll(".theme").forEach(b=>b.onclick=()=>{ pickTheme=b.dataset.k; S.profile.theme=pickTheme; applyTheme(); save(); renderThemes(); });
+}
+function openSettings(){
+  pickTheme=S.profile.theme||"ice"; renderThemes();
+  $("s-name").value=S.profile.name; $("s-playlist").value=S.profile.playlist;
+  $("s-friend").value=S.profile.friend||FRIEND_NAME_DEFAULT; $("s-phone").value=S.profile.phone;
+  $("b-box").value=""; $("r-confirm").classList.add("hide"); $("r-ask").classList.remove("hide");
+  $("settings").classList.add("show");
+}
+function closeSettings(){ $("settings").classList.remove("show"); }
+
+/* ============ render ============ */
+function render(){
+  $("today-date").textContent = new Date().toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long"});
+  ({today:renderToday,urge:renderUrge,no:renderNo,journal:renderJournal,progress:renderProgress,you:renderYou})[S.tab]?.();
+}
+
+/* ============ lock / decrypt ============ */
+const KEYSTORE="littleSteps.key";
+const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const tob64=u=>btoa(String.fromCharCode(...new Uint8Array(u)));
+async function tryKey(key){
+  const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(VAULT.iv)},key,unb64(VAULT.data));
+  const p=JSON.parse(new TextDecoder().decode(pt));
+  MESSAGES=p.messages||[]; FRIEND_NAME_DEFAULT=p.friend||""; FRIEND_PHONE_DEFAULT=p.phone||"";
+}
+async function unlockSaved(){
+  try{ const k=JSON.parse(localStorage.getItem(KEYSTORE)||"null"); if(!k || k.salt!==VAULT.salt) return false;
+    const key=await crypto.subtle.importKey("raw",unb64(k.key),{name:"AES-GCM"},false,["decrypt"]); await tryKey(key); return true; }
+  catch(e){ return false; }
+}
+async function unlockWithCode(code){
+  const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(code),"PBKDF2",false,["deriveKey"]);
+  const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:unb64(VAULT.salt),iterations:VAULT.iter,hash:"SHA-256"},base,{name:"AES-GCM",length:256},true,["decrypt"]);
+  await tryKey(key);
+  try{ localStorage.setItem(KEYSTORE, JSON.stringify({salt:VAULT.salt, key:tob64(await crypto.subtle.exportKey("raw",key))})); }catch(e){}
+}
+async function boot(){
+  document.querySelector(".wrap").classList.add("hide"); document.querySelector("nav").classList.add("hide");
+  if(!window.crypto || !crypto.subtle){ $("lock").classList.remove("hide"); $("lock-err").textContent="This browser can't open the app. Try Chrome or Safari."; return; }
+  if(await unlockSaved()){ start(); return; }
+  $("lock").classList.remove("hide");
+  $("lock-show").onclick=()=>{ const i=$("lock-code"); i.type=i.type==="password"?"text":"password"; $("lock-show").textContent=i.type==="password"?"show":"hide"; };
+  const go=async()=>{
+    const code=$("lock-code").value.trim(); if(!code) return;
+    $("lock-go").textContent="Unlocking…"; $("lock-go").disabled=true; $("lock-err").textContent="";
+    try{ await unlockWithCode(code); $("lock").classList.add("hide"); start(); }
+    catch(e){ $("lock-err").textContent="That's not it. Check capitals, symbols and dashes."; }
+    $("lock-go").textContent="Unlock"; $("lock-go").disabled=false;
+  };
+  $("lock-go").onclick=go; $("lock-code").onkeydown=e=>{ if(e.key==="Enter") go(); };
+}
+function start(){ document.querySelector(".wrap").classList.remove("hide"); document.querySelector("nav").classList.remove("hide"); init(); }
+
+/* ============ wire up ============ */
+function init(){
+  load(); applyTheme();
+  try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(e){}
+  if(!TABS.some(t=>t.k===S.tab)) S.tab="today";
+
+  $("open-settings").onclick=openSettings;
+  $("s-close").onclick=closeSettings;
+  $("settings").onclick=e=>{ if(e.target.id==="settings") closeSettings(); };
+  $("s-save").onclick=()=>{
+    S.profile.name=$("s-name").value.trim(); S.profile.playlist=$("s-playlist").value.trim();
+    S.profile.friend=$("s-friend").value.trim(); S.profile.phone=$("s-phone").value.trim();
+    save(); closeSettings(); render(); toast("Saved");
+  };
+  $("b-copy").onclick=async()=>{
+    const data=JSON.stringify(S); $("b-box").value=data;
+    try{ await navigator.clipboard.writeText(data); toast("Backup copied. Paste it in a safe note."); }
+    catch(e){ $("b-box").select(); toast("Select the text and copy it"); }
+  };
+  $("b-restore").onclick=()=>{
+    try{ const d=JSON.parse($("b-box").value); if(!d||!d.days) throw 0; S=Object.assign(blank(),d); S.profile=Object.assign(blank().profile,S.profile); applyTheme(); save(); closeSettings(); go(S.tab||"today"); toast("Restored 💙"); }
+    catch(e){ toast("That doesn't look like a backup"); }
+  };
+  $("r-ask").onclick=()=>{ $("r-ask").classList.add("hide"); $("r-confirm").classList.remove("hide"); };
+  $("r-no").onclick=()=>{ $("r-ask").classList.remove("hide"); $("r-confirm").classList.add("hide"); };
+  $("r-yes").onclick=()=>{ S=blank(); applyTheme(); save(); closeSettings(); go("today"); $("welcome").classList.add("show"); };
+
+  $("w-go").onclick=()=>{
+    S.profile.name=$("w-name").value.trim(); S.profile.playlist=$("w-playlist").value.trim();
+    ["cig","vape","drink"].forEach(k=>{ const v=Math.max(0,Number($("w-"+k).value)||0); S.baseline[k]=v; S.goals[k]=v; });
+    S.setup=true; save(); $("welcome").classList.remove("show"); render();
+    toast("Your goals start at your usual amount. Lower them slowly in Progress.");
+  };
+
+  $("urge-btn").onclick=startUrge;
+  $("urge-done").onclick=endUrge;
+  $("urge-yes").onclick=()=>logUrge(true);
+  $("urge-no").onclick=()=>logUrge(false);
+
+  $("no-add").onclick=()=>{ S.nos.push({t:Date.now(), note:$("no-note").value.trim()}); $("no-note").value=""; save(); renderNo(); toast("Proud of you. That takes guts 💙"); };
+
+  $("j-other").onclick=()=>{ promptI=(promptI+1)%PROMPTS.length; $("prompt").textContent=PROMPTS[promptI]; };
+  $("j-save").onclick=()=>{ const t=$("j-text").value.trim(); if(!t){ toast("Write something first"); return; } S.journal.push({t:Date.now(), prompt:PROMPTS[promptI], text:t}); $("j-text").value=""; save(); renderJournal(); toast("Saved. Thank you for being honest with yourself."); };
+
+  $("suggest").onclick=suggestStep;
+  $("save-plan").onclick=savePlan;
+  $("msg-open").onclick=openMsg;
+  $("msg-reset").onclick=()=>{ S.round=(S.round||0)+1; save(); $("msg-one").classList.add("hide"); renderYou(); toast("All the surprises are back 💌"); };
+
+  go(S.tab);
+  if(!S.setup) $("welcome").classList.add("show");
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) render(); });
+}
+boot();
+</script>
+</body>
+</html>
